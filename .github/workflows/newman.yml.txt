@@ -1,0 +1,31 @@
+name: Newman API Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  newman-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Newman Tests
+        run: |
+          newman run fake-store-api-tests.json -r cli,html --reporter-html-export newman-report.html
+
+      - name: Upload Newman Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: newman-report
+          path: newman-report.html
